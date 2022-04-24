@@ -1,8 +1,8 @@
 from fastapi import FastAPI, Response, status
-from data.openapi import OpenApiStore
+from data.store import BookStore
 
 app = FastAPI()
-bookStore = OpenApiStore.getInstance()
+bookStore = BookStore.getInstance()
 
 # Returns info about one book by ISBN
 @app.get("/book/{isbn}")

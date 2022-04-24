@@ -5,6 +5,7 @@ from requests.exceptions import HTTPError
 #Class to get and save info about books
 class OpenApiStore:
     instance = None
+    
     def __init__(self, url = "https://openlibrary.org"):
         self.serverURL = url
 
