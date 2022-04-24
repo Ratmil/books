@@ -1,5 +1,6 @@
 import requests
 from requests.exceptions import HTTPError
+from models.models import Book, Author, SearchResult
 
 
 #Class to get and save info about books
@@ -45,28 +46,27 @@ class OpenApiStore:
         data = response.json()
         results = []
         for doc in data["docs"]:
-            print(doc.keys())
             title = doc["title"]
             isbns = doc.get("isbn", [])
-            results.append({
-                'title': title,
-                'isbns': isbns
-            })
+            results.append(SearchResult(title=title, isbns=isbns))
         return results
 
 
     def _parseBooksResponse(self, response, max_count = 0):
         data = response.json()
         books = []
-        fields = ['title', 'url', 'number_of_pages', 'authors']
         for key in data:
             isbn = key.split(":")[1] if ":" in key else key
             book_data = data[key]
-            book = {
-                'ISBN': isbn,
-            }
-            for field in fields:
-                book[field] = book_data[field]
+            book = Book(isbn=isbn, 
+                        title = book_data['title'],
+                        url=book_data.get('url', ''),
+                        number_of_pages=int(book_data.get('number_of_pages', '0')))
+            authors = []
+            for author_data in book_data.get('authors', []):
+                author = Author(name=author_data.get('name', ''), url=author_data.get('url', ''))
+                authors.append(author)
+            book.authors = authors
             books.append(book)
             if max_count > 0 and len(books) >= max_count:
                 break

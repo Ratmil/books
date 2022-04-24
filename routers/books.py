@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Response, status
 from data.store import BookStore
+from models.models import Book, Author
 
 
 app = FastAPI()
@@ -27,3 +28,8 @@ def getBooksByISBN(isbns: str, response: Response):
 @app.get("/bookssearch")
 def getBooksBySearchText(text: str, limit: int = 100):
     return bookStore.searchByTitle(text, limit)
+
+# Saves information of a book
+@app.put("/book")
+def saveBook(self):
+    pass

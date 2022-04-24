@@ -32,9 +32,21 @@ class BookStore:
             BookStore.__instance = BookStore()
         return BookStore.__instance
 
-    #Returns info about book by given ISBN
+    # Returns info about book by given ISBN
     def getBookByISBN(self, isbn: str):
         book = self._getLocalStore().getBookByISBN(isbn)
         if not book:
             book = self._getRemoteStore().getBookByISBN(isbn)
         return book
+
+    # Returns info about list of books by given ISBN
+    def getBooksByISBN(self, isbns: str):
+        books = self._getLocalStore().getBooksByISBNs(isbns)
+        isbn_list = isbns.split(",")
+        isbns_from_local = [book.isbn for book in books]
+        missing_isbns = list(set(isbn_list) - set(isbns_from_local))
+        if len(missing_isbns) > 0:
+            remote_books = self._getRemoteStore().getBooksByISBN(",".join(missing_isbns))
+            books.extend(remote_books)
+        return books
+
