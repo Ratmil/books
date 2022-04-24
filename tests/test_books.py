@@ -1,8 +1,8 @@
-from data.openapi import BookStore
+from data.openapi import OpenApiStore
 
 # Test getting a book by ISBN
 def test_get_book_by_isbn():
-    bookStore = BookStore.getInstance()
+    bookStore = OpenApiStore.getInstance()
     book = bookStore.getBookByISBN("9780980200447")    
     assert book, "One and only one book should have been returned"
     assert book['ISBN'] == '9780980200447', "Wrong book return"
@@ -13,7 +13,7 @@ def test_get_book_by_isbn():
 
 # Test getting a list of books by ISBN
 def test_get_books_by_isbn():
-    bookStore = BookStore.getInstance()
+    bookStore = OpenApiStore.getInstance()
     books = bookStore.getBooksByISBN("9780980200447,0201558025")    
     assert books and len(books) == 2, "One and only one book should have been returned"
     assert books[0]['ISBN'] == '9780980200447', "Wrong book return"
@@ -23,7 +23,7 @@ def test_get_books_by_isbn():
 
 # Test searching books by title
 def test_search_by_title():
-    bookStore = BookStore.getInstance()
+    bookStore = OpenApiStore.getInstance()
     search_text = "Hobbit"
     books = bookStore.searchByTitle(search_text, limit=10)
     assert books 

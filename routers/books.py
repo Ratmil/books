@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Response, status
 from data.store import BookStore
 
+
 app = FastAPI()
 bookStore = BookStore.getInstance()
 

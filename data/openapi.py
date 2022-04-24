@@ -4,23 +4,23 @@ from requests.exceptions import HTTPError
 
 #Class to get and save info about books
 class OpenApiStore:
-    instance = None
+    __instance = None
     
     def __init__(self, url = "https://openlibrary.org"):
-        self.serverURL = url
+        self._serverURL = url
 
 
     # Returns single instance of this class
     @staticmethod
-    def getInstance():
-        if not OpenApiStore.instance:
-            OpenApiStore.instance = OpenApiStore()
-        return OpenApiStore.instance
+    def getInstance(url = "https://openlibrary.org"):
+        if not OpenApiStore.__instance:
+            OpenApiStore.__instance = OpenApiStore(url)
+        return OpenApiStore.__instance
 
     #Returns info about book by given ISBN
     def getBookByISBN(self, isbn: str):
         response = requests.get("%s/api/books/?bibkeys=ISBN:%s&format=json&jscmd=data" % (
-            self.serverURL, requests.utils.quote(isbn)))
+            self._serverURL, requests.utils.quote(isbn)))
         if response.status_code == 200:
             books = self._parseBooksResponse(response, max_count=1)
             if len(books) > 0:
@@ -32,7 +32,7 @@ class OpenApiStore:
         isbn_list = isbns.split(",")
         bibKeys = ",".join(["ISBN:%s" % requests.utils.quote(isbn) for isbn in isbn_list])
         response = requests.get("%s/api/books/?bibkeys=%s&format=json&jscmd=data" % (
-            self.serverURL, bibKeys))
+            self._serverURL, bibKeys))
         if response.status_code == 200:
             books = self._parseBooksResponse(response)
             return books
@@ -41,7 +41,7 @@ class OpenApiStore:
     #Returns results from a search by book title
     def searchByTitle(self, text:str, limit: int = 100):
         response = requests.get("%s/search.json?title=%s&limit=%s" % (
-            self.serverURL, requests.utils.quote(text), limit))
+            self._serverURL, requests.utils.quote(text), limit))
         data = response.json()
         results = []
         for doc in data["docs"]:
