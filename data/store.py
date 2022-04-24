@@ -1,5 +1,6 @@
 from data.dbbookstore import DBBookStore
 from data.openapi import OpenApiStore
+from models.models import Book, Comment
 import configparser
 
 
@@ -50,3 +51,14 @@ class BookStore:
             books.extend(remote_books)
         return books
 
+    def saveBook(self, book: Book):
+        return self._getLocalStore().saveBook(book)
+
+    def saveComment(self, isbn: str, comment: Comment):
+        return self._getLocalStore().saveComment(isbn, comment)
+
+    def getComments(self, isbn: str):
+        return self._getLocalStore().getComments(isbn)
+
+    def deleteComment(self, isbn: str, comment_id: int):
+        return self._getLocalStore().deleteComment(isbn, comment_id)

@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Response, status
 from data.store import BookStore
-from models.models import Book, Author
+from models.models import Book, Comment
 
 
 app = FastAPI()
@@ -24,12 +24,27 @@ def getBooksByISBN(isbns: str, response: Response):
     else:
         return books
 
-# Returns results from a search by book title
-@app.get("/bookssearch")
-def getBooksBySearchText(text: str, limit: int = 100):
-    return bookStore.searchByTitle(text, limit)
-
 # Saves information of a book
 @app.put("/book")
-def saveBook(self):
-    pass
+def saveBook(book: Book, response: Response):
+    if not bookStore.saveBook(book):
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    else:
+        return book
+
+# Saves a comment about a book
+@app.put("/book/{isbn}/comment")
+def saveComment(isbn: str, comment: Comment):
+    if not bookStore.saveComment(isbn, comment):
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    else:
+        return comment
+
+# Return list of comments
+@app.get("/book/{isbn}/comments")
+def getComments(isbn: str):
+    return bookStore.getComments(isbn)
+
+@app.delete("/book/{isbn}/comment/{comment_id}")
+def deleteComment(isbn: str, comment_id: int):
+    return bookStore.deleteComment(isbn, comment_id)
