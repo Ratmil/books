@@ -40,11 +40,22 @@ def saveComment(isbn: str, comment: Comment):
     else:
         return comment
 
+@app.post("/book/{isbn}/comment")
+def updateComment(isbn: str, comment: Comment):
+    if bookStore.updateComment(isbn, comment):
+        return comment
+    else:
+        response.status_code = status.HTTP_404_NOT_FOUND
+
 # Return list of comments
 @app.get("/book/{isbn}/comments")
 def getComments(isbn: str):
     return bookStore.getComments(isbn)
 
+# Deletes a comment from a book
 @app.delete("/book/{isbn}/comment/{comment_id}")
 def deleteComment(isbn: str, comment_id: int):
-    return bookStore.deleteComment(isbn, comment_id)
+    if bookStore.deleteComment(isbn, comment_id):
+        return True
+    else:
+        response.status_code = status.HTTP_404_NOT_FOUND

@@ -108,6 +108,16 @@ class DBBookStore:
             con.commit()
             return True
 
+    # Updates a comment
+    def updateComment(self, isbn: str, comment: Comment):
+        with closing(sqlite3.connect(self._dbname)) as con, closing(con.cursor()) as cr:
+            cr.execute("UPDATE comments SET user_name=?, subject=?, comment=? WHERE id=? AND book_isbn=?",
+                       (comment.user_name, comment.subject, comment.text, comment.comment_id, isbn))
+            if cr.rowcount < 1:
+                return False
+            con.commit()
+            return True
+
     # Returns list of comments of given ISBN book
     def getComments(self, isbn: str):
         with closing(sqlite3.connect(self._dbname)) as con, closing(con.cursor()) as cr:
@@ -125,7 +135,7 @@ class DBBookStore:
             cr.execute("DELETE FROM comments WHERE book_isbn = ? AND id = ?",
                        (isbn, comment_id))
             if cr.rowcount < 1:
-                raise DBError("Error deleting comment")
+                return False
             con.commit()
             return True
 

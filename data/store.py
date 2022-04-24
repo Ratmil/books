@@ -54,6 +54,9 @@ class BookStore:
     def saveBook(self, book: Book):
         return self._getLocalStore().saveBook(book)
 
+    def updateComment(self, isbn: str, comment: Comment):
+        return self._getLocalStore().updateComment(isbn, comment)
+
     def saveComment(self, isbn: str, comment: Comment):
         return self._getLocalStore().saveComment(isbn, comment)
 
