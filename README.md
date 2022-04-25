@@ -7,5 +7,5 @@ make install
 make run
 
 ## Run tests
-make test
+make test  
 -Requires server running.
