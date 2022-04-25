@@ -45,13 +45,15 @@ class OpenApiStore:
     def searchByTitle(self, text:str, limit: int = 100):
         response = requests.get("%s/search.json?title=%s&limit=%s" % (
             self._serverURL, requests.utils.quote(text), limit))
-        data = response.json()
-        results = []
-        for doc in data["docs"]:
-            title = doc["title"]
-            isbns = doc.get("isbn", [])
-            results.append(SearchResult(title=title, isbns=isbns))
-        return results
+        if response.status_code == 200:
+            data = response.json()
+            results = []
+            for doc in data["docs"]:
+                title = doc["title"]
+                isbns = doc.get("isbn", [])
+                results.append(SearchResult(title=title, isbns=isbns))
+            return results
+        return False
 
 
     def _parseBooksResponse(self, response, max_count = 0):

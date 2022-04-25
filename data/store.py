@@ -57,7 +57,8 @@ class BookStore:
         missing_isbns = list(set(isbn_list) - set(isbns_from_local))
         if len(missing_isbns) > 0:
             remote_books = self._getRemoteStore().getBooksByISBN(",".join(missing_isbns))
-            books.extend(remote_books)
+            if remote_books:
+                books.extend(remote_books)
         return books
 
     def saveBook(self, book: Book):

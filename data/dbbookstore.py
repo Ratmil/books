@@ -19,7 +19,7 @@ class DBBookStore:
         
     # Returns single instance of this class
     @staticmethod
-    def getInstance(dbname = "books.db"):
+    def getInstance(dbname = "db/books.db"):
         if not DBBookStore.__instance:
             DBBookStore.__instance = DBBookStore(dbname)
         return DBBookStore.__instance
@@ -46,6 +46,30 @@ class DBBookStore:
                 book.authors = authors
                 return book
             return False
+
+    # Removes a book from db
+    def removeBookByISBN(self, isbn: str):
+        with closing(sqlite3.connect(self._dbname)) as con, closing(con.cursor()) as cr:
+            query = "SELECT id FROM books WHERE isbn = ?"
+            cr.execute(query, (isbn,))
+            row = cr.fetchone()
+            if not row:
+                return True
+            book_id = row[0]
+            query = "DELETE FROM books_authors WHERE book_id = ?"
+            cr.execute(query, (book_id,))
+            query = "DELETE FROM books WHERE id = ?"
+            cr.execute(query, (book_id,))
+            con.commit()
+            return True
+
+    # Removes an author from db
+    def removeAuthor(self, author: str):
+        with closing(sqlite3.connect(self._dbname)) as con, closing(con.cursor()) as cr:
+            query = "DELETE FROM authors WHERE name = ?"
+            cr.execute(query, (author,))
+            con.commit()
+            return True
 
     # Returns list of books by given ISBNs separated by commas
     def getBooksByISBNs(self, isbns: str):
