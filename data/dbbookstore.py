@@ -4,7 +4,7 @@ from models.models import Book, Author, Comment
 
 
 class DBError(Exception):
-    def __init__(msg: str):
+    def __init__(self, msg: str):
         self.msg = msg
 
 class DBBookStore:

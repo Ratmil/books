@@ -7,6 +7,10 @@ import configparser
 DEFAULT_API_URL = "https://openlibrary.org"
 DEFAULT_DB = "db/books.db"
 
+class StoreError(Exception):
+    def __init__(self, msg: str):
+        self.msg = msg
+
 class BookStore:
     __instance = None
     
@@ -58,7 +62,14 @@ class BookStore:
         return self._getLocalStore().updateComment(isbn, comment)
 
     def saveComment(self, isbn: str, comment: Comment):
-        return self._getLocalStore().saveComment(isbn, comment)
+        local_store = self._getLocalStore()
+        book = local_store.getBookByISBN(isbn)
+        if not book:
+            book = self._getRemoteStore().getBookByISBN(isbn)
+        if book:
+            return local_store.saveComment(isbn, comment)
+        else:
+            return False
 
     def getComments(self, isbn: str):
         return self._getLocalStore().getComments(isbn)
