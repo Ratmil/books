@@ -3,7 +3,9 @@ from requests.exceptions import HTTPError
 from models.models import Book, Author, SearchResult
 
 
-#Class to get and save info about books
+#
+# Class to get info from openAPI
+#
 class OpenApiStore:
     __instance = None
     

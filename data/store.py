@@ -11,6 +11,11 @@ class StoreError(Exception):
     def __init__(self, msg: str):
         self.msg = msg
 
+
+#
+# Class to manage information about books.
+# Get and save book info, comments, authors
+# 
 class BookStore:
     __instance = None
     

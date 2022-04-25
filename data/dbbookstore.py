@@ -7,6 +7,10 @@ class DBError(Exception):
     def __init__(self, msg: str):
         self.msg = msg
 
+
+#
+# Get and retrieve info from SQLite DB
+#
 class DBBookStore:
     __instance = None
 
