@@ -1,6 +1,6 @@
 import sqlite3
 from contextlib import closing
-from models.models import Book, Author, Comment
+from models.models import Book, Author, Comment, SearchResult
 
 
 class DBError(Exception):
@@ -46,6 +46,18 @@ class DBBookStore:
                 book.authors = authors
                 return book
             return False
+
+    # Returns a list of books search by title
+    def searchByTitle(self, searchText: str, limit: int = 100):
+        with closing(sqlite3.connect(self._dbname)) as con, closing(con.cursor()) as cr:
+            query = "SELECT id, isbn, title FROM books WHERE title LIKE ? LIMIT ?"
+            cr.execute(query, ('%' + searchText + '%', limit))
+            rows = cr.fetchall()
+            result = []
+            for row in rows:
+                searchResult = SearchResult(title=row[2], isbns=[row[1]])
+                result.append(searchResult)
+            return result
 
     # Removes a book from db
     def removeBookByISBN(self, isbn: str):

@@ -35,6 +35,14 @@ def getBooksByISBN(isbns: str, response: Response):
     else:
         return books
 
+@app.get("/search_books")
+def searchBooks(title: str, limit: int = 100):
+    """
+    Returns a search result of books by title
+    """
+    books = bookStore.searchByTitle(title, limit)
+    return books
+
 # Saves information of a book
 @app.put("/book")
 def saveBook(book: Book, response: Response):

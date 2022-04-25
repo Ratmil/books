@@ -126,7 +126,12 @@ def test_comments():
         assert response.status_code == 404
             
 
-    
-
-    
-
+def test_search():
+    # Test the search of books
+    # We will just test that all books title containe the search text
+    response = requests.get("http://localhost:8000/search_books?title=hobbit&limit=10")
+    results = response.json()
+    assert len(results) <= 10, "Too many books return"
+    assert len(results) > 0, "There should be at least one book with title containing the word hobbit"
+    for book in results:
+        assert "hobbit" in book['title'].lower(), "Found one book not containing the search word"

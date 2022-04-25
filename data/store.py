@@ -61,6 +61,23 @@ class BookStore:
                 books.extend(remote_books)
         return books
 
+    # Returns a list of books search by title
+    def searchByTitle(self, searchText: str, limit: int = 100):
+        local_store = self._getLocalStore()
+        local_books = local_store.searchByTitle(searchText, limit)
+        remote_store = self._getRemoteStore()
+        new_limit = limit
+        if local_books:
+            new_limit -= len(local_books)
+        remote_books = remote_store.searchByTitle(searchText, new_limit) or []
+        result = []
+        if local_books:
+            result.extend(local_books)
+        if remote_books:
+            result.extend(remote_books)
+        return result
+
+
     def saveBook(self, book: Book):
         return self._getLocalStore().saveBook(book)
 
