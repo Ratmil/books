@@ -8,4 +8,4 @@ make run
 
 ## Run tests
 make test
-Requires server running.
+-Requires server running.
