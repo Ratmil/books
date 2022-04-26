@@ -99,3 +99,19 @@ class BookStore:
 
     def deleteComment(self, isbn: str, comment_id: int):
         return self._getLocalStore().deleteComment(isbn, comment_id)
+
+    def validateBook(self, book: Book):
+        if not book.title or len(book.title) < 3:
+            return False
+        if not book.isbn or len(book.isbn) < 1:
+            return False
+        return True
+
+    def validateComment(self, comment: Comment):
+        if not comment.user_name or len(comment.user_name) < 2:
+            return False
+        if not comment.subject or len(comment.subject) < 1:
+            return False
+        if not comment.text or len(comment.text) < 5:
+            return False
+        return True

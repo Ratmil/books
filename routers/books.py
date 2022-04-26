@@ -49,7 +49,10 @@ def saveBook(book: Book, response: Response):
     """
     ### Saves book info
     """
-    if not bookStore.saveBook(book):
+    if not bookStore.validateBook(book):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return "Invalid input"
+    elif not bookStore.saveBook(book):
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
     else:
         return book
@@ -61,7 +64,10 @@ def saveComment(isbn: str, comment: Comment, response: Response):
     ### Adds a comment to a book
     - **isbn**: ISBN of book where comment will be added
     """
-    if not bookStore.saveComment(isbn, comment):
+    if not bookStore.validateComment(comment):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return "Invalid input"
+    elif not bookStore.saveComment(isbn, comment):
         response.status_code = status.HTTP_404_NOT_FOUND
     else:
         return comment
@@ -73,7 +79,10 @@ def updateComment(isbn: str, comment: Comment, response: Response):
     - **isbn**: ISBN of book where comment will be added
     - **comment**: Comment about the book
     """
-    if bookStore.updateComment(isbn, comment):
+    if not bookStore.validateComment(comment):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return "Invalid input"
+    elif bookStore.updateComment(isbn, comment):
         return comment
     else:
         response.status_code = status.HTTP_404_NOT_FOUND

@@ -135,3 +135,24 @@ def test_search():
     assert len(results) > 0, "There should be at least one book with title containing the word hobbit"
     for book in results:
         assert "hobbit" in book['title'].lower(), "Found one book not containing the search word"
+
+def test_save_invalid_book():
+    authors = ['Peter Parker', 'Bruce Wayne', 'Bilbo Baggins']
+    book_to_save = {'isbn': '9780980200447',
+        'title': 'F',  # Title too short
+        'number_of_pages': 100,
+        'authors': [{'name': author} for author in authors]
+    }
+    response = requests.put("http://localhost:8000/book",
+                           json=book_to_save)
+    assert response.status_code >= 400
+
+def test_save_invalid_comment():
+    comment = {
+        'user_name': 'P', # User name too short
+        'subject': 'Great book!',
+        'text': 'This is a great book. You should read it'
+    }
+    response = requests.put("http://localhost:8000/book/9780980200447/comment",
+                            json=comment)
+    assert response.status_code >= 400
