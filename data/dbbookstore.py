@@ -51,6 +51,7 @@ class DBBookStore:
     def searchByTitle(self, searchText: str, limit: int = 100):
         with closing(sqlite3.connect(self._dbname)) as con, closing(con.cursor()) as cr:
             query = "SELECT id, isbn, title FROM books WHERE title LIKE ? LIMIT ?"
+            # TODO: Escape %
             cr.execute(query, ('%' + searchText + '%', limit))
             rows = cr.fetchall()
             result = []

@@ -76,6 +76,7 @@ def saveComment(isbn: str, comment: Comment, response: Response):
         response.status_code = status.HTTP_404_NOT_FOUND
         return getErrorMsg(ERROR_BOOK_NOT_FOUND)
     else:
+        response.status_code = status.HTTP_201_CREATED
         return comment
 
 @app.post("/book/{isbn}/comment")
