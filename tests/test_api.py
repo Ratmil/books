@@ -1,5 +1,4 @@
 import requests
-import sqlite3
 from data.dbbookstore import DBBookStore
 
 def test_get_book():
