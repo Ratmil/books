@@ -119,8 +119,7 @@ def deleteComment(isbn: str, comment_id: int, response: Response):
     - **comment_id**: Id of comment to delete
     """
     if bookStore.deleteComment(isbn, comment_id):
-        response.status_code = status.HTTP_204_NO_CONTENT
-        return True
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
     else:
         response.status_code = status.HTTP_404_NOT_FOUND
         return getErrorMsg(ERROR_COMMENT_NOT_FOUND)
