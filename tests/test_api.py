@@ -114,7 +114,7 @@ def test_comments():
 
     for comment in comments_added:
         response = requests.delete("http://localhost:8000/book/9780980200447/comment/%s" % comment['comment_id'])
-        assert response.status_code == 200
+        assert response.status_code == 204
     response = requests.get("http://localhost:8000/book/9780980200447/comments")
     assert response.status_code == 200
     new_comments = response.json()

@@ -1,6 +1,7 @@
 from data.dbbookstore import DBBookStore
 from data.openapi import OpenApiStore
 from models.models import Book, Comment
+from data.errors import *
 import configparser
 
 
@@ -10,6 +11,7 @@ DEFAULT_DB = "db/books.db"
 class StoreError(Exception):
     def __init__(self, msg: str):
         self.msg = msg
+
 
 
 #
@@ -95,23 +97,30 @@ class BookStore:
             return False
 
     def getComments(self, isbn: str):
-        return self._getLocalStore().getComments(isbn)
+        local_store = self._getLocalStore()
+        book = local_store.getBookByISBN(isbn)
+        if not book:
+            book = self._getRemoteStore().getBookByISBN(isbn)
+        if book:
+            return self._getLocalStore().getComments(isbn)
+        else:
+            return False
 
     def deleteComment(self, isbn: str, comment_id: int):
         return self._getLocalStore().deleteComment(isbn, comment_id)
 
     def validateBook(self, book: Book):
         if not book.title or len(book.title) < 3:
-            return False
+            return ERROR_INVALID_BOOK_TITLE
         if not book.isbn or len(book.isbn) < 1:
-            return False
-        return True
+            return ERROR_INVALID_BOOK_ISBN
+        return ERROR_OK
 
     def validateComment(self, comment: Comment):
         if not comment.user_name or len(comment.user_name) < 2:
-            return False
+            return ERROR_INVALID_USER_NAME
         if not comment.subject or len(comment.subject) < 1:
-            return False
+            return ERROR_INVALID_COMMENT_SUBJECT
         if not comment.text or len(comment.text) < 5:
-            return False
-        return True
+            return ERROR_INVALID_COMMENT_TEXT
+        return ERROR_OK
